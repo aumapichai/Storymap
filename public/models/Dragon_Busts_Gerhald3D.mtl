@@ -1,0 +1,120 @@
+# Blender MTL File: 'Dragon_Busts_Gerhald3D.blend'
+# Material Count: 10
+
+newmtl BlackDragon_Eyes
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl BlackDragon_Head
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\BlackDragon_Head_Normal.png
+map_Kd Textures\\BlackDragon_Head_Base_Color.png
+map_Ns Textures\\BlackDragon_Head_Roughness.png
+
+newmtl BlackDragon_Horns_1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\BlackDragon_Horns1_Normal.png
+map_Kd Textures\\BlackDragon_Horns1_Base_Color.png
+map_Ns Textures\\BlackDragon_Horns1_Roughness.png
+
+newmtl BlackDragon_Horns_2
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\BlackDragon_Horns2_Normal.png
+map_Kd Textures\\BlackDragon_Horns2_Base_Color.png
+map_Ns Textures\\BlackDragon_Horns2_Roughness.png
+
+newmtl BlackDragon_Teeth
+Ns 401.820270
+Ka 1.000000 1.000000 1.000000
+Kd 0.448249 0.454999 0.397473
+Ks 0.104545 0.104545 0.104545
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl GreenDragon_Eyes
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl GreenDragon_Head
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\GreenDragon_Head_Normal.png
+map_Kd Textures\\GreenDragon_Head_BaseColor.png
+map_Ns Textures\\GreenDragon_Head_Roughness.png
+
+newmtl GreenDragon_Horns_1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\GreenDragon_Horns1_Normal.png
+map_Kd Textures\\GreenDragon_Horns1_Base_Color.png
+map_Ns Textures\\GreenDragon_Horns1_Roughness.png
+
+newmtl GreenDragon_Horns_2
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Textures\\GreenDragon_Horns2_Normal.png
+map_Kd Textures\\GreenDragon_Horns2_Base_Color.png
+map_Ns Textures\\GreenDragon_Horns2_Roughness.png
+
+newmtl GreenDragon_Teeth
+Ns 182.249990
+Ka 1.000000 1.000000 1.000000
+Kd 0.514510 0.513757 0.468862
+Ks 0.090909 0.090909 0.090909
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2

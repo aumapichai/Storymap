@@ -1,0 +1,98 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+/* body::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #8e8e8b;
+  border-radius: 15px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 15px;
+} */
+/* .mapboxgl-ctrl-attrib a,
+.maplibregl-ctrl-attrib a {
+  color: rgba(0, 0, 0, 0.75);
+  text-decoration: none;
+  display: none;
+} */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Prompt";
+  /* font-style: normal;
+  font-weight: 500; */
+  src: url("/fonts/Prompt/Prompt-Regular.ttf");
+}
+
+@font-face {
+  font-family: "PromptExtraLight";
+  src: url("/fonts/Prompt/Prompt-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: "PromptMedium";
+  src: url("/fonts/Prompt/Prompt-Medium.ttf");
+}
+
+@font-face {
+  font-family: "PromptThin";
+  /* font-style: normal;
+  font-weight: 500; */
+  src: url("/fonts/Prompt/Prompt-Thin.ttf");
+}
+
+@font-face {
+  font-family: "PromptBlack";
+  src: url("/fonts/Prompt/Prompt-Black.ttf");
+}
+
+@font-face {
+  font-family: "PromptBold";
+  src: url("/fonts/Prompt/Prompt-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Sarabun";
+  /* font-style: normal;
+  font-weight: 300; */
+  src: url("/fonts/Sarabun/Sarabun-Regular.ttf");
+}
+
+@font-face {
+  font-family: "KanitLight";
+  src: url("/fonts/Kanit/Kanit-Light.ttf");
+}
+
+@font-face {
+  font-family: "KanitMedium";
+  src: url("/fonts/Kanit/Kanit-Medium.ttf");
+}
+
+@font-face {
+  font-family: "KanitRegular";
+  src: url("/fonts/Kanit/Kanit-Regular.ttf");
+}
+
+@font-face {
+  font-family: "KanitExtraLight";
+  src: url("/fonts/Kanit/Kanit-ExtraLight.ttf");
+}
