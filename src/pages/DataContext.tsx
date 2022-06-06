@@ -10,6 +10,7 @@ interface IValMockContext {
   indexDialogMain: Number;
   clickActive: String;
   locationPageMain: any;
+  checkFarmArea: Boolean;
 }
 
 interface IMockContext {

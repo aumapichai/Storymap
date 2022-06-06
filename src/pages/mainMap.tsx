@@ -64,7 +64,7 @@ const MainMap: NextPage = () => {
         "https://edu.vallarismaps.com/core/api/styles/1.0-beta/styles/622f5cbfd4c8f35aa853b31c?api_key=ay7kZQs04aiRVeE6rBSgO0tyQW1C96lGRoStZhn171hkvWNbaC84lpszKy3VY1u3&fbclid=IwAR2LGPKe3CxEAbGBsaKYSCKSH4Di7VvpW1KLwvCmS6b8EVDodN35Hck6Dbw", // stylesheet location
       // style:
       //   "https://api.maptiler.com/maps/hybrid/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL",
-      center: [104.76716166514018, 17.391327303963642], // starting position [lng, lat]
+      // center: [104.76716166514018, 17.391327303963642], // starting position [lng, lat]
       // starting zoom
       zoom: 14,
       // maxZoom: 14,
@@ -126,6 +126,40 @@ const MainMap: NextPage = () => {
       //   });
       // }, 1000);
     });
+    // mapInit.on("load", function () {
+    //   mapInit.loadImage(
+    //     "https://upload.wikimedia.org/wikipedia/commons/7/7c/201408_cat.png",
+    //     function (error, image: any) {
+    //       if (error) throw error;
+    //       mapInit.addImage("cat", image);
+    //       mapInit.addSource("point", {
+    //         type: "geojson",
+    //         data: {
+    //           type: "FeatureCollection",
+    //           features: [
+    //             {
+    //               type: "Feature",
+    //               geometry: {
+    //                 type: "Point",
+    //                 coordinates: [104.76716166514018, 17.391327303963642],
+    //               },
+    //             },
+    //           ],
+    //         },
+    //       });
+    //       mapInit.addLayer({
+    //         id: "points",
+    //         type: "symbol",
+    //         source: "point",
+    //         layout: {
+    //           "icon-image": "cat",
+    //           "icon-size": 0.25,
+    //         },
+    //       });
+    //     }
+    //   );
+    // });
+
     // mapInit.easeTo({
     //   padding: { right: 570 },
     // });
@@ -237,228 +271,233 @@ const MainMap: NextPage = () => {
             sx={{ width: "100%", height: "100%" }}
           >
             <AnimatePresence>
-              {mock.val?.showDialog && mock.val?.typeDialog === "data_fish" ? (
-                <motion.div
-                  {...boxAnimation}
-                  style={{
-                    position: "relative",
-                    background: "white",
-                    borderRadius: "10px",
-                    left: 105,
-                    top: 0,
-                    bottom: 0,
-                    margin: "auto",
-                    height: "fit-content",
-                    width: "70%",
-                    border: "1px solid rgba( 255, 255, 255, 0.18 )",
-                    boxShadow:
-                      "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    py={1}
-                    sx={{
-                      paddingLeft: "25px",
-                      paddingRight: "3px",
-                      boxShadow: "0 1px 0 0 #dddd",
+              {
+                mock.val?.showDialog && mock.val?.typeDialog === "data_fish" ? (
+                  <motion.div
+                    {...boxAnimation}
+                    style={{
+                      position: "relative",
+                      background: "white",
+                      borderRadius: "10px",
+                      left: 105,
+                      top: 0,
+                      bottom: 0,
+                      margin: "auto",
+                      height: "fit-content",
+                      width: "70%",
+                      border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                      boxShadow:
+                        "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontSize: "16px",
-                        fontFamily: "KanitRegular",
-                        color: "rgb(42 65 174)",
-                      }}
-                    >
-                      ข้อมูลเพิ่มเติม
-                    </Typography>
-                    <IconButton
-                      aria-label="close dialog"
-                      color="error"
-                      onClick={() =>
-                        mock.setVal({
-                          ...mock.val,
-                          showDialog: false,
-                          clickActive: null,
-                        })
-                      }
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </Stack>
-
-                  <Box
-                    component={"div"}
-                    sx={{ padding: "16px 25px 25px 25px" }}
-                  >
-                    <BoxImages
-                      sx={{
-                        backgroundImage: `url(${
-                          story[1].descriptions[
-                            mock.val?.indexDialogMain
-                              ? Number(mock.val.indexDialogMain)
-                              : 0
-                          ].imageFish
-                        })`,
-                      }}
-                    />
-
-                    <Typography variant="titleMain" mt={3}>
-                      {
-                        story[1].descriptions[
-                          mock.val?.indexDialogMain
-                            ? Number(mock.val.indexDialogMain)
-                            : 0
-                        ].title
-                      }
-                      ของปลานิล
-                    </Typography>
-
-                    <Typography variant="description" mt={2}>
-                      {
-                        story[1].descriptions[
-                          mock.val?.indexDialogMain
-                            ? Number(mock.val.indexDialogMain)
-                            : 0
-                        ].description2
-                      }
-                    </Typography>
-                  </Box>
-                </motion.div>
-              ) : mock.val?.showDialog &&
-                mock.val?.typeDialog === "data_farming" ? (
-                <motion.div
-                  {...boxAnimation2}
-                  style={{
-                    position: "relative",
-                    background: "white",
-                    borderRadius: "10px",
-                    width: "80%",
-                    left: 80,
-                    top: 25,
-                    height: "120px",
-                    // border: "1px solid rgba( 255, 255, 255, 0.18 )",
-                    boxShadow:
-                      "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
-                  }}
-                >
-                  <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-                    <Box
-                      component={"div"}
-                      sx={{
-                        width: "170px",
-                        height: "100%",
-                        backgroundImage: `url(/images/${
-                          story[2].farmingArea[
-                            mock.val?.indexDialogMain
-                              ? Number(mock.val.indexDialogMain)
-                              : 0
-                          ].image
-                        })`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        borderRadius: "10px 0 0 10px",
-                      }}
-                    />
                     <Stack
-                      direction="column"
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      py={1}
                       sx={{
-                        width: "calc(100% - 170px)",
-                        height: "100%",
+                        paddingLeft: "25px",
+                        paddingRight: "3px",
+                        boxShadow: "0 1px 0 0 #dddd",
                       }}
                     >
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Stack direction="row" alignItems="center">
-                          <Typography
-                            gutterBottom
-                            variant="titleReason"
-                            sx={{
-                              width: "unset !important",
-                              fontSize: "24px",
-                              margin: "5px 6px 5px 16px",
-                              padding: "0",
-                            }}
-                            component="div"
-                          >
-                            {
-                              story[2].farmingArea[
-                                mock.val?.indexDialogMain
-                                  ? Number(mock.val.indexDialogMain)
-                                  : 0
-                              ].title
-                            }
-                          </Typography>
-                          <Box
-                            component="div"
-                            sx={{
-                              fontSize: "14px",
-                              fontWeight: "600",
-                              fontFamily: "KanitLight",
-                              width: "220px",
-                              height: "30px",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              background: "#ffa000",
-                              borderRadius: "8px",
-                              color: "white",
-                            }}
-                          >
-                            {`จำนวนผู้เลี้ยงปลากระชัง ${
-                              story[2].farmingArea[
-                                mock.val?.indexDialogMain
-                                  ? Number(mock.val.indexDialogMain)
-                                  : 0
-                              ].amount
-                            } ราย`}
-                          </Box>
-                        </Stack>
-                        <IconButton
-                          aria-label="close dialog"
-                          color="error"
-                          onClick={() => {
-                            mock.setVal({
-                              ...mock.val,
-                              showDialog: false,
-                              clickActive: null,
-                              locationPageMain: story[2].locations,
-                            });
-                          }}
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                      </Stack>
                       <Typography
-                        variant="contentReason"
                         sx={{
                           fontSize: "16px",
-                          fontFamily: "KanitExtraLight",
-                          WebkitLineClamp: "3",
+                          fontFamily: "KanitRegular",
+                          color: "rgb(42 65 174)",
                         }}
                       >
+                        ข้อมูลเพิ่มเติม
+                      </Typography>
+                      <IconButton
+                        aria-label="close dialog"
+                        color="error"
+                        onClick={() =>
+                          mock.setVal({
+                            ...mock.val,
+                            showDialog: false,
+                            clickActive: null,
+                          })
+                        }
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </Stack>
+
+                    <Box
+                      component={"div"}
+                      sx={{ padding: "16px 25px 25px 25px" }}
+                    >
+                      <BoxImages
+                        sx={{
+                          backgroundImage: `url(${
+                            story[1].descriptions[
+                              mock.val?.indexDialogFish
+                                ? Number(mock.val.indexDialogFish)
+                                : 0
+                            ].imageFish
+                          })`,
+                        }}
+                      />
+
+                      <Typography variant="titleMain" mt={3}>
                         {
-                          story[2].farmingArea[
-                            mock.val?.indexDialogMain
-                              ? Number(mock.val.indexDialogMain)
+                          story[1].descriptions[
+                            mock.val?.indexDialogFish
+                              ? Number(mock.val.indexDialogFish)
                               : 0
-                          ].content
+                          ].title
+                        }
+                        ของปลานิล
+                      </Typography>
+
+                      <Typography variant="description" mt={2}>
+                        {
+                          story[1].descriptions[
+                            mock.val?.indexDialogFish
+                              ? Number(mock.val.indexDialogFish)
+                              : 0
+                          ].description2
                         }
                       </Typography>
-                    </Stack>
-                  </Stack>
-                </motion.div>
-              ) : (
-                ""
-              )}
+                    </Box>
+                  </motion.div>
+                ) : (
+                  ""
+                )
+                // mock.val?.showDialog &&
+                //   mock.val?.typeDialog === "data_farming" ? (
+                //   <motion.div
+                //     {...boxAnimation2}
+                //     style={{
+                //       position: "relative",
+                //       background: "white",
+                //       borderRadius: "10px",
+                //       width: "80%",
+                //       left: 80,
+                //       top: 25,
+                //       height: "120px",
+                //       // border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                //       boxShadow:
+                //         "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+                //     }}
+                //   >
+                //     <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+                //       <Box
+                //         component={"div"}
+                //         sx={{
+                //           width: "170px",
+                //           height: "100%",
+                //           backgroundImage: `url(/images/${
+                //             story[2].farmingArea[
+                //               mock.val?.indexDialogFarming
+                //                 ? Number(mock.val.indexDialogFarming)
+                //                 : 0
+                //             ].image
+                //           })`,
+                //           backgroundRepeat: "no-repeat",
+                //           backgroundSize: "cover",
+                //           backgroundPosition: "center",
+                //           borderRadius: "10px 0 0 10px",
+                //         }}
+                //       />
+                //       <Stack
+                //         direction="column"
+                //         sx={{
+                //           width: "calc(100% - 170px)",
+                //           height: "100%",
+                //         }}
+                //       >
+                //         <Stack
+                //           direction="row"
+                //           alignItems="center"
+                //           justifyContent="space-between"
+                //         >
+                //           <Stack direction="row" alignItems="center">
+                //             <Typography
+                //               gutterBottom
+                //               variant="titleReason"
+                //               sx={{
+                //                 width: "unset !important",
+                //                 fontSize: "24px",
+                //                 margin: "5px 6px 5px 16px",
+                //                 padding: "0",
+                //               }}
+                //               component="div"
+                //             >
+                //               {
+                //                 story[2].farmingArea[
+                //                   mock.val?.indexDialogFarming
+                //                     ? Number(mock.val.indexDialogFarming)
+                //                     : 0
+                //                 ].title
+                //               }
+                //             </Typography>
+                //             <Box
+                //               component="div"
+                //               sx={{
+                //                 fontSize: "14px",
+                //                 fontWeight: "600",
+                //                 fontFamily: "KanitLight",
+                //                 width: "220px",
+                //                 height: "30px",
+                //                 display: "flex",
+                //                 flexDirection: "column",
+                //                 justifyContent: "center",
+                //                 alignItems: "center",
+                //                 background: "#ffa000",
+                //                 borderRadius: "8px",
+                //                 color: "white",
+                //               }}
+                //             >
+                //               {`จำนวนผู้เลี้ยงปลากระชัง ${
+                //                 story[2].farmingArea[
+                //                   mock.val?.indexDialogFarming
+                //                     ? Number(mock.val.indexDialogFarming)
+                //                     : 0
+                //                 ].amount
+                //               } ราย`}
+                //             </Box>
+                //           </Stack>
+                //           <IconButton
+                //             aria-label="close dialog"
+                //             color="error"
+                //             onClick={() => {
+                //               mock.setVal({
+                //                 ...mock.val,
+                //                 showDialog: false,
+                //                 clickActive: null,
+                //                 locationPageMain: story[2].locations,
+                //               });
+                //             }}
+                //           >
+                //             <CloseIcon />
+                //           </IconButton>
+                //         </Stack>
+                //         <Typography
+                //           variant="contentReason"
+                //           sx={{
+                //             fontSize: "16px",
+                //             fontFamily: "KanitExtraLight",
+                //             WebkitLineClamp: "3",
+                //           }}
+                //         >
+                //           {
+                //             story[2].farmingArea[
+                //               mock.val?.indexDialogFarming
+                //                 ? Number(mock.val.indexDialogFarming)
+                //                 : 0
+                //             ].content
+                //           }
+                //         </Typography>
+                //       </Stack>
+                //     </Stack>
+                //   </motion.div>
+                // ) : (
+                //   ""
+                // )
+              }
             </AnimatePresence>
           </Stack>
         </Box>
@@ -500,7 +539,13 @@ const MainMap: NextPage = () => {
             <Stack
               direction="column"
               alignItems="center"
-              sx={{ background: "white", borderRadius: "8px", boxShadow: 1 }}
+              sx={{
+                // background: "rgba( 255, 255, 255, 0.5 )",
+                // backdropFilter: "blur(4px)",
+                background: "white",
+                borderRadius: "8px",
+                boxShadow: 1,
+              }}
               p={2}
               spacing={2}
             >
