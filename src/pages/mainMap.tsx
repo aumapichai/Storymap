@@ -177,6 +177,7 @@ const MainMap: NextPage = () => {
   // }, [meshLayer]);
 
   const [idScroll, setIdScroll] = useState(null);
+  console.log("first");
 
   const getIdForScroll = (e: any) => {
     setIdScroll(e);
