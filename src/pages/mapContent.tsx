@@ -1,36 +1,27 @@
 import styled from "@emotion/styled";
-import { SettingsInputAntennaTwoTone } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   IconButton,
   Paper,
-  Slide,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
+// import { TransitionProps } from "@mui/material/transitions";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
-import { AnyPointerEvent } from "framer-motion/types/gestures/PanSession";
+// import { AnyPointerEvent } from "framer-motion/types/gestures/PanSession";
 import { NextPage } from "next";
-import React, { FC, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { Element, Events } from "react-scroll";
+// import { Element, Events } from "react-scroll";
 import { MockContext } from "./DataContext";
-import DialogMine from "./dialogMine";
-import CloseIcon from "@mui/icons-material/Close";
-import { Map, Marker } from "maplibre-gl";
+import { Threebox } from "threebox-plugin";
+import * as THREE from "three";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Link from "next/link";
@@ -65,31 +56,24 @@ const BoxImages = styled(Box)(({ theme }) => ({
 const MapContent: NextPage<any> = (props) => {
   const mock = useContext(MockContext);
   const { data } = props;
-  const { locationProp } = props;
+  const { locationProp, animationStart, setAnimationStart } = props;
   const { stateIcon } = props;
 
   // const [open, setOpen] = React.useState(false);
   const { ref, inView, entry } = useInView({
     threshold: 0,
-
-    // delay: 1000,
   });
-
-  // const [location, setLocation] = useState(null);
 
   const [arrayIndex, setArrayIndex] = React.useState(0);
 
   const controls = useAnimation();
 
-  const [selectedId, setSelectedId] = useState(null);
-
   const [clickActive, setClickActive] = useState(null);
 
-  const [showDialogMine, setShowDialogMine] = useState(false);
-  const [dialogFarm, setDialogFarm] = useState(false);
-  const [offset, setOffset] = useState(0);
-
   const [tranProb, setTranProb] = useState(true);
+
+  const [animation] = useState<any>({});
+  const [rotate, setRotate] = useState<any>(0);
   const [tranFarm, setTranFarm] = useState(true);
   const [showFarm, setShowFarm] = useState(true);
   const [showFarm_1, setShowFarm_1] = useState(true);
@@ -104,16 +88,22 @@ const MapContent: NextPage<any> = (props) => {
   const [hoverOnScroll, setHoverOnScroll] = useState(false);
 
   useEffect(() => {
-    let stateIcon = mock.val?.stateIcon ? true : false;
+    let isPlay: any = false;
+    let fish: any;
+    let mixers: any[] = [];
+    let clock: any;
+    let mixer1: any;
+    let mixer2: any;
+    let mixer3: any;
 
-    if (inView) {
+    if (inView && locationProp) {
+      isPlay = false;
+
       controls.start("enter");
       setClickActive(null);
       setShowFarm(true);
-      // setShowDialogMine(false);
-      // setDialogFarm(false);
+
       setArrayIndex(0);
-      handleClickLocation(data.locations);
       mock.setVal({
         ...mock.val,
         showDialog: false,
@@ -123,15 +113,162 @@ const MapContent: NextPage<any> = (props) => {
         indexDialogFarming: 0,
       });
       const timer = setTimeout(() => {
-        // locationProp.flyTo(data.locations);
+        locationProp.flyTo({
+          center: data.locations.center,
+          zoom: data.locations.zoom,
+          speed: 1.2,
+          curve: 1,
+          essential: true,
+          easing(t: any) {
+            return t;
+          },
+        });
+
+        locationProp?.setPaintProperty(
+          "water",
+          "fill-extrusion-color",
+          "rgba(146, 196, 231, 1)"
+        );
+        locationProp?.setPaintProperty("water", "fill-extrusion-height", 0);
+
+        locationProp?.setPaintProperty(
+          "background",
+          "background-color",
+          "rgba(181, 224, 173, 1)"
+        );
+
         props.idForScroll(data.id);
-        // markerFunc(data.locations.center);
-        // const marker = new Marker()
-        //   .setLngLat(data.locations.center)
-        //   .addTo(locationProp);
-        // return () => {
-        //   marker.remove();
-        // };
+
+        if (data.id !== 0 && window.tb.world?.children?.length) {
+          isPlay = false;
+          window.tb.world?.children?.map((rs: any, index: any) => {
+            window.tb.remove(window.tb.world.children[index]);
+          });
+
+          if (locationProp.getLayer("model-fish")) {
+            locationProp.removeLayer("model-fish");
+          }
+
+          fish = undefined;
+          mixers = [];
+          clock = undefined;
+          mixer1 = undefined;
+          mixer2 = undefined;
+          mixer3 = undefined;
+        } else {
+          if (data.id === 0) {
+            window.tb.clear();
+
+            window.tb = new Threebox(
+              locationProp,
+              locationProp.getCanvas().getContext("webgl"),
+              {
+                defaultLights: true,
+              }
+            );
+
+            isPlay = false;
+
+            let customLayer = {
+              id: "model-fish",
+              type: "custom",
+              renderingMode: "3d",
+              onAdd: function (map: any, gl: any) {
+                let options = {
+                  type: "glb", //model type
+                  obj: `/models/fish.glb`,
+                  units: "meters", // in meters
+                  scale: 20,
+                  rotation: { x: 90, y: 180, z: 0 },
+                  anchor: "center",
+                };
+                window.tb.loadObj(options, function (model: any) {
+                  fish = model;
+                  mixer1 = new THREE.AnimationMixer(model);
+                  mixer2 = new THREE.AnimationMixer(model);
+                  mixer3 = new THREE.AnimationMixer(model);
+
+                  console.log(model.animations);
+                  fish.setCoords([106.3328610586887, 9.568141549456763, 0]);
+                  fish.castShadow = true;
+                  fish.addEventListener(
+                    "ObjectChanged",
+                    onObjectChanged,
+                    false
+                  );
+
+                  mixer1.clipAction(model.animations[0]).play();
+                  mixer2.clipAction(model.animations[1]).play();
+                  mixer3.clipAction(model.animations[2]).play();
+
+                  mixers.push(mixer1, mixer2, mixer3);
+
+                  window.tb.add(fish);
+
+                  renderAnimation();
+                  isPlay = true;
+                  clock = new THREE.Clock();
+
+                  ani();
+                });
+              },
+              render: function (gl: any, matrix: any) {
+                window.tb.update();
+              },
+            };
+            locationProp.addLayer(customLayer as any);
+
+            const renderAnimation = async () => {
+              const getData = await fetch(
+                "https://cloud.vallarismaps.com/core/api/features/1.0/collections/629b8a105ac9bd64b6940e9d/items?api_key=SmxDVKuhZO2bbxwiRb7uaGUXoN8WYR6aaeg4BfyFbxTpq98sax5ZCz5TYXWlrMIB"
+              )
+                .then((rs) => rs.json())
+                .then((rs) => rs);
+              const router = getData.features[0].geometry.coordinates[0].map(
+                (s: any, i: any) => {
+                  return [...s, -200];
+                }
+              );
+              var options = {
+                path: router,
+                duration: 1200000,
+                trackHeading: true,
+              };
+
+              fish.followPath(options, function () {});
+            };
+
+            const easing = (t: any) => {
+              return t * (2 - t);
+            };
+
+            const onObjectChanged = (e: any) => {
+              let model = e.detail.object;
+              locationProp.easeTo({
+                center: model.coordinates,
+                essential: true,
+                pitch: 80,
+                easing: easing,
+                zoom: 15.8,
+                bearing: -90,
+              });
+            };
+
+            const ani = () => {
+              if (!isPlay) {
+              } else {
+                const delta = clock.getDelta();
+
+                for (const mixer of mixers) mixer.update(delta);
+                requestAnimationFrame(ani);
+              }
+            };
+
+            return () => {
+              window.tb.dispose();
+            };
+          }
+        }
       }, 1000);
       return () => {
         clearTimeout(timer);
@@ -154,42 +291,103 @@ const MapContent: NextPage<any> = (props) => {
     }
   }, [controls, inView, locationProp]);
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
-
-  const handleClickLocation = (e: any) => {
-    // markerFunc(e.center);
-
-    let marker1 = new Marker({
-      color: "#ffa000",
-      draggable: false,
-    })
-      .setLngLat(e.center)
-      .addTo(locationProp);
-
+  const handleClickLocation = (
+    e: any,
+    add3d?: boolean,
+    modelOptions?: {
+      modelPath: string;
+      type: string;
+      scale: number;
+      rotation: any;
+      duplicate?: boolean;
+    },
+    remove3d?: boolean
+  ) => {
+    setAnimationStart(false);
     const timer2 = setTimeout(() => {
       locationProp.flyTo(e);
-    }, 1000);
+
+      setTimeout(() => {
+        setAnimationStart(true);
+      }, 5000);
+    }, 700);
+
+    if (remove3d) {
+      if (window.tb.world?.children?.length) {
+        if (locationProp.getLayer("model")) {
+          locationProp.removeLayer("model");
+          locationProp.repaint = true;
+        }
+        window.tb.world?.children?.map((rs: any, index: any) => {
+          return window.tb.remove(window.tb.world.children[index]);
+        });
+      }
+    }
+    if (add3d) {
+      if (locationProp.getLayer("model")) {
+        locationProp.removeLayer("model");
+        locationProp.repaint = true;
+      }
+      if (window.tb.world?.children?.length) {
+        window.tb.world?.children?.map((rs: any, index: any) => {
+          return window.tb.remove(window.tb.world.children[index]);
+        });
+      }
+
+      let myModel: any;
+      let customLayer = {
+        id: "model",
+        type: "custom",
+        renderingMode: "3d",
+        onAdd: function (map: any, gl: any) {
+          let options = {
+            type: modelOptions?.type, //model type
+            obj: modelOptions?.modelPath,
+            units: "meters", // in meters
+            scale: modelOptions?.scale,
+            rotation: modelOptions?.rotation,
+            anchor: "center",
+            cloned: modelOptions?.duplicate ? true : false,
+          };
+          window.tb.loadObj(options, function (model: any) {
+            myModel = model;
+            if (modelOptions?.duplicate) {
+              locationProp.once("idle", () => {
+                let features = locationProp.queryRenderedFeatures(undefined, {
+                  layers: ["village"],
+                });
+
+                if (features) {
+                  features.forEach(function (pt: any) {
+                    let newSphere = myModel
+                      .duplicate()
+                      .setCoords(pt.geometry.coordinates);
+
+                    newSphere.castShadow = true;
+                    window.tb.add(newSphere);
+                  });
+                }
+              });
+            } else {
+              myModel.setCoords(e.center);
+              myModel.castShadow = true;
+
+              window.tb.add(myModel);
+            }
+          });
+        },
+        render: function (gl: any, matrix: any) {
+          window.tb.update();
+        },
+      };
+
+      locationProp.addLayer(customLayer as any);
+    }
 
     return () => {
       clearTimeout(timer2);
     };
   };
-
-  // const markerFunc = (locationFunc: any) => {
-  //   const marker1 = new Marker({
-  //     color: "#ffa000",
-  //     draggable: false,
-  //   })
-  //     .setLngLat(locationFunc)
-  //     .addTo(locationProp);
-  //   return () => marker1.remove();
-  // };
 
   let checkLocationPageMain = mock.val?.locationPageMain
     ? mock.val.locationPageMain
@@ -197,43 +395,6 @@ const MapContent: NextPage<any> = (props) => {
   if (Object.keys(checkLocationPageMain).length !== 0) {
     handleClickLocation(checkLocationPageMain);
   }
-
-  const BtnYear = styled(Button)({
-    height: 60,
-    weight: 60,
-    borderRadius: "50%",
-    background: "#ff9b57",
-    fontSize: "16px",
-    fontFamily: "KanitRegular",
-    "&:hover": {
-      background: "#ff4444",
-    },
-  });
-
-  const boxAnimation = {
-    key: "box",
-    initial: {
-      y: "50%",
-      opacity: 0,
-      scale: 0.5,
-    },
-    animate: {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-    },
-    exit: {
-      y: "50%",
-      opacity: 0,
-      transition: {
-        duration: 0.1,
-      },
-    },
-    transition: {
-      duration: 0.2,
-      ease: "easeOut",
-    },
-  };
 
   const boxAnimation2 = {
     key: "box",
@@ -371,6 +532,26 @@ const MapContent: NextPage<any> = (props) => {
       }
     }
   };
+
+  const animate = () => {
+    setRotate((t: any) => (t + 0.1) % 360);
+    animation.id = window.requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    animation.id = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(animation.id);
+  }, [animation]);
+
+  useEffect(() => {
+    if (animationStart && locationProp) {
+      if (data.id === 0) {
+      } else {
+        locationProp.rotateTo(rotate, { duration: 0 });
+      }
+    }
+  }, [rotate, animationStart, locationProp, data]);
+
   return (
     <Box
       component={"div"}
@@ -379,7 +560,7 @@ const MapContent: NextPage<any> = (props) => {
         height: "100vh",
         position: "relative",
         zIndex: 1,
-        background: data.id === 0 ? "white" : "unset",
+        background: "unset",
       }}
     >
       <motion.div
@@ -421,9 +602,7 @@ const MapContent: NextPage<any> = (props) => {
           </Stack>
         </ItemPapers>
         <ItemPapers sx={{ px: 3, py: 2, mt: 2 }}>
-          {data.descriptions.length === 0 ? (
-            ""
-          ) : (
+          {data.descriptions.length === 0 ? null : (
             <Typography variant="description" mb={2}>
               {data.descriptionMain}
             </Typography>
@@ -431,7 +610,7 @@ const MapContent: NextPage<any> = (props) => {
 
           <Grid container spacing={2}>
             {data.descriptions.length === 0
-              ? ""
+              ? null
               : data.descriptions.map((e: any, index: any) => (
                   <Grid key={`desc_${e.id}`} item xs={6}>
                     <motion.button
@@ -456,41 +635,15 @@ const MapContent: NextPage<any> = (props) => {
                             boxShadow: "0 0 0 4px #f2d61d",
                           },
                         }}
-                        onClick={
-                          () => {
-                            setArrayIndex(index);
-                            setDataContext({
-                              id: e.id,
-                              type: "data_fish",
-                              index: index,
-                              indexName: "indexDialogFish",
-                            });
-                          }
-
-                          // e.id === clickActive
-                          //   ? {}
-                          //   : !mock.val?.showDialog
-                          //   ? mock.setVal({
-                          //       ...mock.val,
-                          //       showDialog: true,
-                          //       typeDialog: "data_fish",
-                          //       indexDialogFish: index,
-                          //     })
-                          //   : mock.setVal({
-                          //       ...mock.val,
-                          //       showDialog: false,
-                          //       typeDialog: "data_fish",
-                          //       indexDialogFish: index,
-                          //     });
-                          // setTimeout(() => {
-                          //   mock.setVal({
-                          //     ...mock.val,
-                          //     showDialog: true,
-                          //     typeDialog: "data_fish",
-                          //     indexDialogFish: index,
-                          //   });
-                          // }, 500);
-                        }
+                        onClick={() => {
+                          setArrayIndex(index);
+                          setDataContext({
+                            id: e.id,
+                            type: "data_fish",
+                            index: index,
+                            indexName: "indexDialogFish",
+                          });
+                        }}
                       >
                         <CardMedia
                           component="img"
@@ -522,9 +675,7 @@ const MapContent: NextPage<any> = (props) => {
                   </Grid>
                 ))}
 
-            {data.farmingArea.length === 0 ? (
-              ""
-            ) : (
+            {data.farmingArea.length === 0 ? null : (
               <>
                 <Grid item xs={12}>
                   <BoxImages sx={{ boxShadow: "unset !important" }}>
@@ -671,11 +822,28 @@ const MapContent: NextPage<any> = (props) => {
                                             if (
                                               mock.val?.clickActive === e.id
                                             ) {
+                                              // handleClickLocation(
+                                              //   data.locations
+                                              // );
                                               handleClickLocation(
-                                                data.locations
+                                                data.locations,
+                                                undefined,
+                                                undefined,
+                                                true
                                               );
                                             } else {
-                                              handleClickLocation(e.locations);
+                                              // handleClickLocation(e.locations);
+                                              handleClickLocation(
+                                                e.locations,
+                                                true,
+                                                {
+                                                  modelPath:
+                                                    "/models/village.glb",
+                                                  type: "glb",
+                                                  scale: e.actions.scale,
+                                                  rotation: e.actions.rotation,
+                                                }
+                                              );
                                             }
                                           }}
                                         >
@@ -1002,11 +1170,28 @@ const MapContent: NextPage<any> = (props) => {
                                             ) {
                                               setShowFarm(true);
                                               setShowFarm_1(true);
+                                              // handleClickLocation(
+                                              //   data.locations
+                                              // );
                                               handleClickLocation(
-                                                data.locations
+                                                data.locations,
+                                                undefined,
+                                                undefined,
+                                                true
                                               );
                                             } else {
-                                              handleClickLocation(e.locations);
+                                              // handleClickLocation(e.locations);
+                                              handleClickLocation(
+                                                e.locations,
+                                                true,
+                                                {
+                                                  modelPath:
+                                                    "/models/village.glb",
+                                                  type: "glb",
+                                                  scale: e.actions.scale,
+                                                  rotation: e.actions.rotation,
+                                                }
+                                              );
                                             }
                                           }}
                                         >
@@ -1052,9 +1237,7 @@ const MapContent: NextPage<any> = (props) => {
               </>
             )}
 
-            {data.descriptionProblem.length === 0 ? (
-              ""
-            ) : (
+            {data.descriptionProblem.length === 0 ? null : (
               <>
                 <Grid item xs={12} mt={1}>
                   <Typography
@@ -1109,7 +1292,32 @@ const MapContent: NextPage<any> = (props) => {
                             border: "unset",
                           }}
                           onClick={() => {
-                            setArrayIndex(index);
+                            setArrayIndex((oldIndex) => {
+                              if (data.descriptionProblem[oldIndex].actions) {
+                                locationProp.setPaintProperty(
+                                  data.descriptionProblem[oldIndex].actions
+                                    .layerId,
+                                  data.descriptionProblem[oldIndex].actions
+                                    .paint,
+                                  data.descriptionProblem[oldIndex].actions
+                                    .default
+                                );
+                              }
+
+                              return index;
+                            });
+
+                            if (data.descriptionProblem[index].actions) {
+                              setTimeout(() => {
+                                locationProp.setPaintProperty(
+                                  data.descriptionProblem[index].actions
+                                    .layerId,
+                                  data.descriptionProblem[index].actions.paint,
+                                  data.descriptionProblem[index].actions.color
+                                );
+                              }, 500);
+                            }
+
                             handleClickLocation(
                               data.descriptionProblem[index].locations
                             );
@@ -1119,27 +1327,7 @@ const MapContent: NextPage<any> = (props) => {
                             }, 700);
                           }}
                         >
-                          {/* <BtnYear
-                            sx={{
-                              background:
-                                arrayIndex === index
-                                  ? "#ff4444 !important"
-                                  : "",
-                            }}
-                            variant="contained"
-                            onClick={() => {
-                              setArrayIndex(index);
-                              handleClickLocation(
-                                data.descriptionProblem[index].locations
-                              );
-                              setTranProb(false);
-                              setTimeout(() => {
-                                setTranProb(true);
-                              }, 700);
-                            }}
-                          > */}
                           ปี {e.yearP}
-                          {/* </BtnYear> */}
                         </motion.button>
                       </Grid>
                     ))}
@@ -1190,9 +1378,7 @@ const MapContent: NextPage<any> = (props) => {
                 </Grid>
               </>
             )}
-            {data.reasonProblem.length === 0 ? (
-              ""
-            ) : (
+            {data.reasonProblem.length === 0 ? null : (
               <>
                 <Grid item xs={12} mt={1}>
                   <Typography
@@ -1275,11 +1461,6 @@ const MapContent: NextPage<any> = (props) => {
                                   fontWeight: "600",
                                   fontFamily: "KanitLight",
                                   width: "50px",
-                                  // height: "30px",
-                                  // display: "flex",
-                                  // flexDirection: "column",
-                                  // justifyContent: "center",
-                                  // alignItems: "center",
                                   background: "#ffa000",
                                   borderRadius: "4px",
                                   padding: "2px 8px",
@@ -1314,7 +1495,7 @@ const MapContent: NextPage<any> = (props) => {
               </>
             )}
             {data.dataDam.length === 0
-              ? ""
+              ? null
               : data.dataDam.map((e: any) => (
                   <Grid item xs={12} mt={1} key={`dam_${e.id}`}>
                     <Grid container>
@@ -1360,10 +1541,20 @@ const MapContent: NextPage<any> = (props) => {
                             onClick={() => {
                               if (clickActive === e.id) {
                                 setClickActive(null);
-                                handleClickLocation(data.locations);
+                                handleClickLocation(
+                                  data.locations,
+                                  undefined,
+                                  undefined,
+                                  true
+                                );
                               } else {
                                 setClickActive(e.id);
-                                handleClickLocation(e.locations);
+                                handleClickLocation(e.locations, true, {
+                                  modelPath: "/models/dam.glb",
+                                  type: "glb",
+                                  scale: 5,
+                                  rotation: { x: 90, y: 180, z: 0 },
+                                });
                               }
                             }}
                           >
@@ -1406,9 +1597,7 @@ const MapContent: NextPage<any> = (props) => {
                     </Grid>
                   </Grid>
                 ))}
-            {data.otherEffects.length === 0 ? (
-              ""
-            ) : (
+            {data.otherEffects.length === 0 ? null : (
               <Grid
                 item
                 xs={12}
@@ -1416,7 +1605,6 @@ const MapContent: NextPage<any> = (props) => {
                 onMouseEnter={() => setHoverOnScroll(true)}
                 onMouseLeave={() => setHoverOnScroll(false)}
               >
-                {" "}
                 <Box
                   component={"div"}
                   sx={{
@@ -1541,9 +1729,19 @@ const MapContent: NextPage<any> = (props) => {
                                 if (clickActive === e.id) {
                                   setClickActive(null);
                                   handleClickLocation(data.locations);
+                                  locationProp.setPaintProperty(
+                                    "water",
+                                    "fill-extrusion-color",
+                                    "rgba(146, 196, 231, 1)"
+                                  );
                                 } else {
                                   setClickActive(e.id);
                                   handleClickLocation(e.locations);
+                                  locationProp.setPaintProperty(
+                                    "water",
+                                    "fill-extrusion-color",
+                                    e.actions.color
+                                  );
                                 }
                               }}
                             >
@@ -1616,12 +1814,10 @@ const MapContent: NextPage<any> = (props) => {
                                   margin: "8px 0",
                                   color: "#424242",
                                   fontFamily: "KanitLight",
-                                  // textShadow: "0 0 8px black",
                                   WebkitBoxOrient: "vertical",
                                   WebkitLineClamp: "3",
                                   overflow: "hidden",
                                   display: "-webkit-box",
-                                  // textIndent: "28px",
                                   textAlign: "left",
                                 }}
                               >
@@ -1636,9 +1832,7 @@ const MapContent: NextPage<any> = (props) => {
                 </Grid>
               </Grid>
             )}
-            {data.others.length === 0 ? (
-              ""
-            ) : (
+            {data.others.length === 0 ? null : (
               <>
                 <Grid item xs={12}>
                   <BoxImages
