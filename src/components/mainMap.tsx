@@ -13,18 +13,14 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { NextPage } from "next";
 import MapContent from "./mapContent";
 import { scroller } from "react-scroll";
-import { MockContext } from "./DataContext";
-import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
-import HomeIcon from "@mui/icons-material/Home";
-import { MapboxLayer } from "@deck.gl/mapbox";
-import { ScenegraphLayer, SimpleMeshLayer } from "@deck.gl/mesh-layers";
-import { OBJLoader } from "@loaders.gl/obj";
 import { Sky } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { dataFishMock } from "../dataMock/dataMock";
 import { Threebox } from "threebox-plugin";
+import { MockContext } from "../context/DataContext";
+import { storyContent } from "../content/content";
 
 declare global {
   interface Window {
@@ -34,7 +30,7 @@ declare global {
 
 const MainMap: NextPage = () => {
   const mock = useContext(MockContext);
-  const story = dataFishMock;
+  const story = storyContent;
 
   const [locationMap, setLocationMap] = useState<Map | null>(null);
   const [animationStart, setAnimationStart] = useState<boolean>(false);

@@ -1,16 +1,15 @@
-export const dataFishMock = [
+export const storyContent = [
   {
     id: 0,
     position: "right",
-    title: "",
+    title: "ปัญหาการเลี้ยงปลาในกระชัง",
     icon: "/svg/person-at-home.svg",
     locations: {
       center: [106.3328610586887, 9.568141549456763, 0],
       zoom: 18,
       pitch: 80,
     },
-    descriptionMain:
-      "ปลานิลสามารถอาศัยอยู่ได้ในน้ำจืดและน้ำกร่อย มีถิ่นกำเนิดเดิมอยู่ที่แม่น้ำไนล์ ทวีปแอฟริกา พบทั่วไปตามหนอง บึง และทะเลสาบในประเทศซูดาน, ยูกันดา และทะเลสาบแทนกันยีกา ปลานิลนำเข้าสู่ประเทศไทยครั้งแรกพ.ศ. 2508 ",
+    descriptionMain: "",
     descriptions: [],
     descriptionProblem: [],
     reasonProblem: [],

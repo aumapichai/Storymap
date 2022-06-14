@@ -12,30 +12,21 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-// import { TransitionProps } from "@mui/material/transitions";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
-// import { AnyPointerEvent } from "framer-motion/types/gestures/PanSession";
 import { NextPage } from "next";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-// import { Element, Events } from "react-scroll";
-import { MockContext } from "./DataContext";
 import { Threebox } from "threebox-plugin";
 import * as THREE from "three";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Link from "next/link";
+import { MockContext } from "../context/DataContext";
 
 const ItemPapers = styled(Paper)({
-  // background: "rgba( 255, 255, 255, 0.85 )",
   background: "white",
-  // background: "rgba( 255, 255, 255, 0.65 )",
-  // backdropFilter: "blur(3px)",
-  // boxShadow: "0 3px 10px 0 rgba( 31, 38, 135, 0.37 )",
   boxShadow:
     "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
-  // backdropFilter: "blur(0px)",
-  // webkitBackdropFilter: "blur( 0px )",
   borderRadius: "10px",
   border: "1px solid rgba( 255, 255, 255, 0.18 )",
 });
@@ -580,7 +571,17 @@ const MapContent: NextPage<any> = (props) => {
           height: "fit-content",
         }}
       >
-        <ItemPapers>
+        <ItemPapers
+          sx={
+            data.id === 0
+              ? {
+                  background: "transparent !important",
+                  boxShadow: "unset !important",
+                  border: "unset !important",
+                }
+              : {}
+          }
+        >
           <Stack
             direction="row"
             alignItems="center"
@@ -588,7 +589,13 @@ const MapContent: NextPage<any> = (props) => {
             py={2}
             px={3}
           >
-            <Typography variant="titleMain">{data.title}</Typography>
+            <Typography
+              variant="titleMain"
+              sx={{ fontSize: data.id === 0 ? "42px" : "24px" }}
+            >
+              {data.title}
+            </Typography>
+
             <Box
               component={"div"}
               sx={{
@@ -597,11 +604,26 @@ const MapContent: NextPage<any> = (props) => {
                 height: "35px",
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
+                display: data.id === 0 ? "none" : "",
               }}
             />
           </Stack>
+          <Stack
+            direction="row"
+            justifyContent="end"
+            sx={{ display: data.id === 0 ? "" : "none" }}
+          >
+            <Typography
+              variant="titleCard"
+              sx={{ paddingRight: "60px", fontSize: "30px", marginTop: "10px" }}
+            >
+              Dev Mini Marathon
+            </Typography>
+          </Stack>
         </ItemPapers>
-        <ItemPapers sx={{ px: 3, py: 2, mt: 2 }}>
+        <ItemPapers
+          sx={{ px: 3, py: 2, mt: 2, display: data.id === 0 ? "none" : "" }}
+        >
           {data.descriptions.length === 0 ? null : (
             <Typography variant="description" mb={2}>
               {data.descriptionMain}
